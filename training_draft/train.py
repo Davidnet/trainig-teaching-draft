@@ -37,9 +37,9 @@ model = tf.keras.models.Sequential(
     ]
 )
 
-model_version = 1
+model_version = 2
 tb_callback = tf.keras.callbacks.TensorBoard(
-    f"./logs-exp{model_version}", update_freq=1
+    f"./logs/logs-exp{model_version}", update_freq=1
 )
 
 model.compile(
@@ -49,3 +49,6 @@ model.compile(
 )
 
 model.fit(ds_train, epochs=6, validation_data=ds_test, callbacks=[tb_callback])
+
+model.save(f"./models/saved/model-exp{model_version}.keras")
+model.export(f"./models/export/model-exp{model_version}")

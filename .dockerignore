@@ -1,4 +1,5 @@
-./tests
+tests
 .venv
-./logs
-./data
+logs
+data
+models
