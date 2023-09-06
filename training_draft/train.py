@@ -32,9 +32,11 @@ ds_test = ds_test.prefetch(tf.data.AUTOTUNE)
 
 model = tf.keras.models.Sequential(
     [
-        tf.keras.layers.Flatten(input_shape=(28, 28)),
-        tf.keras.layers.Dense(128, activation="relu"),
-        tf.keras.layers.Dropout(0.2),
+        tf.keras.layers.Conv2D(32, 3, activation="relu", input_shape=(28, 28, 1)),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Conv2D(64, 3, activation="relu"),
+        tf.keras.layers.MaxPooling2D((2, 2)),
+        tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(64, activation="relu"),
         tf.keras.layers.Dense(10),
     ]
@@ -51,6 +53,7 @@ model.compile(
     metrics=[tf.keras.metrics.SparseCategoricalAccuracy()],
 )
 
+model.summary()
 model.fit(ds_train, epochs=6, validation_data=ds_test, callbacks=[tb_callback])
 
 model_dir = Path("./models")
