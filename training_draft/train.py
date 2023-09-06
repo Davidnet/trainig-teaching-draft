@@ -1,5 +1,6 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
+from pathlib import Path
 
 (ds_train, ds_test), ds_info = tfds.load(
     "kmnist",
@@ -33,13 +34,13 @@ model = tf.keras.models.Sequential(
     [
         tf.keras.layers.Flatten(input_shape=(28, 28)),
         tf.keras.layers.Dense(128, activation="relu"),
+        tf.keras.layers.Dropout(0.2),
         tf.keras.layers.Dense(64, activation="relu"),
-        tf.keras.layers.Dense(32, activation="relu"),
         tf.keras.layers.Dense(10),
     ]
 )
 
-model_version = 3
+model_version = 1
 tb_callback = tf.keras.callbacks.TensorBoard(
     f"./logs/logs-exp{model_version}", update_freq=1
 )
@@ -51,6 +52,10 @@ model.compile(
 )
 
 model.fit(ds_train, epochs=6, validation_data=ds_test, callbacks=[tb_callback])
+
+model_dir = Path("./models")
+(model_dir / "saved").mkdir(exist_ok=True)
+(model_dir / "export").mkdir(exist_ok=True)
 
 model.save(f"./models/saved/model-exp{model_version}.keras")
 model.export(f"./models/export/model-exp{model_version}")
